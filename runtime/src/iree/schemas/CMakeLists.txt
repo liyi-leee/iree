@@ -88,6 +88,19 @@ flatbuffer_c_library(
   PUBLIC
 )
 
+flatbuffer_c_library(
+  NAME
+    sim_executable_def_c_fbs
+  SRCS
+    "sim_executable_def.fbs"
+  FLATCC_ARGS
+    "--reader"
+    "--builder"
+    "--verifier"
+    "--json"
+  PUBLIC
+)
+
 add_custom_command(OUTPUT cpu_data_headers_filegroup.stamp
     COMMAND ${CMAKE_COMMAND} -E touch cpu_data_headers_filegroup.stamp
   DEPENDS

@@ -37,6 +37,12 @@ TargetAttr getCUDATargetDetails(llvm::StringRef target,
 // if the given |target| is not recognized.
 StringRef normalizeCUDATarget(StringRef target);
 
+
+TargetAttr getSIMTargetDetails(StringRef target, StringRef features,
+                                MLIRContext *context);
+
+StringRef normalizeSIMTarget(StringRef target);
+
 // Returns the full target of the given |aliasTarget| with a list of
 // comma-separated target |features|. Returns null target if unknown.
 TargetAttr getFullTarget(StringRef targetAPI, StringRef aliasTarget,

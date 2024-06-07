@@ -37,7 +37,7 @@ void LowerExecutableUsingTransformDialectPass::runOnOperation() {
                                   TransformDialectCodegen) {
     return;
   }
-
+  
   // Run the interpreter and drop schedule passes.
   SymbolRefAttr codegenSpec = translationInfo.getCodegenSpec();
   StringRef entryPoint =
@@ -50,10 +50,14 @@ void LowerExecutableUsingTransformDialectPass::runOnOperation() {
     moduleOp.emitOpError("failed to run transform dialect passes");
     return signalPassFailure();
   }
-
+  llvm::outs() << "\n======" << __func__  << "====== \n";
   // Make sure that the translation info is set to `None` to avoid using
   // other pass pipelines.
   auto translationInfoModified = getTranslationInfo(funcOp);
+  llvm::outs() << "Translation Info Modified: \n";
+  translationInfoModified.printStripped(llvm::outs());//(llvm::errs());
+  llvm::outs() << "\n======================= \n";
+
   if (!translationInfoModified ||
       translationInfoModified.getDispatchLoweringPassPipeline() !=
           IREE::Codegen::DispatchLoweringPassPipeline::None) {
@@ -61,6 +65,8 @@ void LowerExecutableUsingTransformDialectPass::runOnOperation() {
                         "translation_info to use None");
     return signalPassFailure();
   }
+  llvm::outs() << "===========3=========== \n";
+
 }
 
 std::unique_ptr<OperationPass<ModuleOp>>

@@ -147,6 +147,7 @@ static iree_status_t iree_tooling_create_run_context(
   iree_hal_device_t* device = NULL;
   iree_hal_allocator_t* device_allocator = NULL;
   if (iree_status_is_ok(status)) {
+    printf("Creating VM context with %ld modules\n", module_list.count);
     status = iree_status_annotate_f(
         iree_tooling_create_context_from_flags(
             instance, module_list.count, module_list.values, default_device_uri,
@@ -159,6 +160,7 @@ static iree_status_t iree_tooling_create_run_context(
     return status;
   }
 
+  printf("Flag_function %s to run\n", FLAG_function);
   // Choose which function to run - either the one specified in the flag or the
   // only exported non-internal function.
   iree_vm_function_t function = {0};

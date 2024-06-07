@@ -356,6 +356,9 @@ endif()
 if(IREE_HAL_DRIVER_METAL)
   message(STATUS "  - metal")
 endif()
+if(IREE_HAL_DRIVER_SIM)
+  message(STATUS "  - sim")
+endif()
 if(IREE_EXTERNAL_HAL_DRIVERS)
   message(STATUS "  + external: ${IREE_EXTERNAL_HAL_DRIVERS}")
 endif()
@@ -407,8 +410,11 @@ set(IREE_TARGET_BACKEND_CUDA_DEFAULT ${IREE_TARGET_BACKEND_DEFAULTS})
 if(NOT IREE_CUDA_AVAILABLE)
   set(IREE_TARGET_BACKEND_CUDA_DEFAULT OFF)
 endif()
-cmake_dependent_option(IREE_TARGET_BACKEND_CUDA "Enables the 'cuda' compiler target backend" ${IREE_TARGET_BACKEND_CUDA_DEFAULT} ${IREE_BUILD_COMPILER} OFF)
+cmake_dependent_option(IREE_TARGET_BACKEND_CUDA "Enables the 'sim' compiler target backend" ${IREE_TARGET_BACKEND_CUDA_DEFAULT} ${IREE_BUILD_COMPILER} OFF)
 
+
+set(IREE_TARGET_BACKEND_SIM_DEFAULT ${IREE_TARGET_BACKEND_DEFAULTS})
+cmake_dependent_option(IREE_TARGET_BACKEND_SIM "Enables the 'sim' compiler target backend" ${IREE_TARGET_BACKEND_SIM_DEFAULT} ${IREE_BUILD_COMPILER} OFF)
 # Non-default target backends either have additional dependencies or are
 # experimental/niche in some fashion.
 # Disable WebGPU by default - it has complex deps and is under development.

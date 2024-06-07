@@ -333,7 +333,23 @@ StringRef normalizeNVIDIAGPUTarget(StringRef target) {
 }
 
 } // namespace
+std::optional<TargetDetails> getSIMTargetDetails(StringRef target) {
 
+  const WgpDetails *ampereWgp = getAmpereWgpDetails();
+  static const ChipDetails OriginChip = {100};
+
+  return llvm::StringSwitch<std::optional<TargetDetails>>(target.lower())
+      .Case("sim_00", TargetDetails{ampereWgp, &OriginChip})
+      .Default(std::nullopt);
+}
+
+StringRef normalizeSIMDevTarget(StringRef target) {
+  if (target.starts_with("sim_"))
+    return target;
+
+  return llvm::StringSwitch<StringRef>(target.lower())
+      .Default(StringRef());
+}
 //===----------------------------------------------------------------------===//
 // Query functions
 //===----------------------------------------------------------------------===//
@@ -361,6 +377,17 @@ TargetAttr getCUDATargetDetails(StringRef target, StringRef features,
 
 StringRef normalizeCUDATarget(StringRef target) {
   return normalizeNVIDIAGPUTarget(target);
+}
+
+TargetAttr getSIMTargetDetails(StringRef target, StringRef features,
+                                MLIRContext *context) {
+  if (auto details = getSIMTargetDetails(target))
+    return createTargetAttr(*details, normalizeSIMDevTarget(target),
+                            features, context);
+  return nullptr;
+}
+StringRef normalizeSIMTarget(StringRef target) {
+  return normalizeSIMDevTarget(target);
 }
 
 TargetAttr getFullTarget(StringRef targetAPI, StringRef aliasTarget,

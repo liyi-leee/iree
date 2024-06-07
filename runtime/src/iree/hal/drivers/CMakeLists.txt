@@ -150,6 +150,10 @@ if(IREE_HAL_DRIVER_METAL)
   add_subdirectory(metal)
   list(APPEND _INIT_INTERNAL_DEPS iree::hal::drivers::metal::registration)
 endif()
+if(IREE_HAL_DRIVER_SIM)
+  add_subdirectory(sim)
+  list(APPEND _INIT_INTERNAL_DEPS iree::hal::drivers::sim::registration)
+endif()
 
 iree_cc_library(
   NAME

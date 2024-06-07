@@ -76,6 +76,7 @@ void addGPUTransposePassPipeline(OpPassManager &funcPassManager,
 /// module-level pass manager.
 void addGPUVectorizationPassPipeline(OpPassManager &funcPassManager);
 
+void addSimVectorizationPassPipeline(OpPassManager &funcPassManager);
 /// Lowering for winograd transform ops. Follows `VectorizationPassPipeline`
 /// with different tiling and distribution passes.
 void addGPUWinogradVectorizePassPipeline(OpPassManager &funcPassManager);
@@ -103,7 +104,11 @@ void buildLLVMGPUCodegenConfigurationPassPipeline(
 /// the structured ops path. The pass manager `pm` in here should operate on
 /// the module within the IREE::HAL::ExecutableOp.
 void buildLLVMGPUCodegenPassPipeline(OpPassManager &variantPassManagery,
-                                     bool useROCM);
+                                     bool useROCM_NVVM_SIM);
+
+void buildSimCodegenConfigurationPassPipeline(OpPassManager &variantPassManager);
+
+void buildSimCodegenPassPipeline(OpPassManager &variantPassManager);
 
 /// Performs the final conversion to NNVM+LLVM dialect.
 std::unique_ptr<OperationPass<ModuleOp>> createConvertToNVVMPass();

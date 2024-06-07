@@ -72,10 +72,13 @@ static iree_status_t iree_vm_context_run_function(
     iree_vm_module_t* module, iree_string_view_t function_name) {
   IREE_TRACE_ZONE_BEGIN(z0);
 
+  printf("run the function in module %s \n", iree_vm_module_name(module).data);
+
   iree_vm_function_call_t call;
   memset(&call, 0, sizeof(call));
   iree_status_t status = iree_vm_module_lookup_function_by_name(
       module, IREE_VM_FUNCTION_LINKAGE_EXPORT, function_name, &call.function);
+  printf("lookup the function %s with status %ld\n", function_name.data, (uintptr_t)(status));
   if (iree_status_is_not_found(status)) {
     // Function doesn't exist; that's ok as this was an optional call.
     iree_status_ignore(status);
@@ -488,6 +491,7 @@ IREE_API_EXPORT iree_status_t iree_vm_context_register_modules(
   iree_status_t status = iree_ok_status();
   iree_host_size_t i = 0;
   for (i = 0; i < module_count; ++i) {
+    printf("%s: %ld \n", __func__, i);
     iree_vm_module_t* module = modules[i];
     context->list.modules[original_count + i] = module;
     context->list.module_states[original_count + i] = NULL;
@@ -518,6 +522,7 @@ IREE_API_EXPORT iree_status_t iree_vm_context_register_modules(
 
     ++context->list.count;
 
+    printf("run function in %ld with module name %s\n", i, iree_vm_module_name(module).data);
     // Run module __init functions, if present.
     // As initialization functions may reference imports we need to perform
     // all of these after we have resolved the imports above.

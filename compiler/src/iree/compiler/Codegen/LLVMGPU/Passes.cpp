@@ -250,6 +250,35 @@ void addGPUVectorizationPassPipeline(OpPassManager &funcPassManager) {
   funcPassManager.addPass(createOptimizeTensorInsertExtractSlicesPass());
 }
 
+void addSimVectorizationPassPipeline(OpPassManager &funcPassManager) {
+  tileAndDistributeToWorkgroup(funcPassManager);
+
+  // funcPassManager.addPass(createCanonicalizerPass());
+  funcPassManager.addPass(createWorkgroupSpecializationPass());
+  funcPassManager.addPass(createCanonicalizerPass());
+  funcPassManager.addPass(createCSEPass());
+
+  // // Distribute linalg onto threads within the workgroup.
+  // funcPassManager.addPass(createGPUTensorTilePass());
+  // funcPassManager.addPass(createCanonicalizerPass());
+  // funcPassManager.addPass(createCSEPass());
+
+  // // Linalg -> vector
+  // addGPUVectorizationPasses(funcPassManager);
+
+  // // tensor to memref
+  // addBufferizePasses(funcPassManager);
+  // funcPassManager.addPass(createGPUDistributePass());
+
+  // // Post bufferization optimizations.
+  // funcPassManager.addPass(createLoopInvariantCodeMotionPass());
+  // funcPassManager.addPass(memref::createFoldMemRefAliasOpsPass());
+  // funcPassManager.addPass(createCanonicalizerPass());
+  // funcPassManager.addPass(createCSEPass());
+  // funcPassManager.addPass(createOptimizeVectorTransferPass());
+  // funcPassManager.addPass(createOptimizeTensorInsertExtractSlicesPass());
+}
+
 //===---------------------------------------------------------------------===//
 // Winograd Vectorize
 //===---------------------------------------------------------------------===//
@@ -945,6 +974,41 @@ void buildLLVMGPUCodegenPassPipeline(OpPassManager &variantPassManager,
     variantPassManager.printAsTextualPipeline(llvm::dbgs());
     llvm::dbgs() << "\n";
   });
+}
+
+void addCleanupPatterns(OpPassManager &passManager) {
+  FunctionLikeNest(passManager)
+      // Standard MLIR cleanup.
+      .addPass(mlir::createCanonicalizerPass)
+      .addPass(mlir::createCSEPass);
+}
+
+void buildSimCodegenPassPipeline(OpPassManager &variantPassManager) {
+  //buildLLVMGPUCodegenPassPipeline(variantPassManager, false);
+  
+  OpPassManager &modulePassManager = variantPassManager.nest<ModuleOp>();
+  modulePassManager.addPass(createLowerExecutableUsingTransformDialectPass());
+  FunctionLikeNest(modulePassManager)
+      .addPass(createLLVMGPULowerExecutableTargetPass);
+  
+  //addCleanupPatterns(variantPassManager);
+}
+void buildSimCodegenConfigurationPassPipeline(OpPassManager &variantPassManager) {
+
+  //buildLLVMGPUCodegenConfigurationPassPipeline(variantPassManager);
+  
+  OpPassManager &modulePassManager = variantPassManager.nest<ModuleOp>();
+  // {
+  //   FunctionLikeNest funcPassManager(modulePassManager);
+  //   funcPassManager.addPass(createGPUGeneralizeNamedOpsPass);
+  //   addCommonTargetExecutablePreprocessingPasses(funcPassManager);
+  // }
+  modulePassManager.addPass(createMaterializeUserConfigsPass());
+
+  modulePassManager.addPass(createLLVMGPUSelectLoweringStrategyPass());
+
+
+  //addCleanupPatterns(variantPassManager);
 }
 
 //===----------------------------------------------------------------------===//

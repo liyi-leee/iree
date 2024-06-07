@@ -1,0 +1,51 @@
+iree_add_all_subdirs()
+
+iree_compiler_register_plugin(
+  PLUGIN_ID
+    hal_target_sim
+  TARGET
+    ::SIM
+)
+
+iree_cc_library(
+  NAME
+    SIM
+  SRCS
+    "SIMTarget.cpp"
+  DEPS
+    LLVMAnalysis
+    LLVMBitReader
+    LLVMBitWriter
+    LLVMCore
+    LLVMLinker
+    LLVMMC
+    LLVMNVPTXCodeGen
+    LLVMNVPTXDesc
+    LLVMNVPTXInfo
+    LLVMPasses
+    LLVMSupport
+    LLVMTarget
+    LLVMipo
+    MLIRBuiltinToLLVMIRTranslation
+    MLIRGPUDialect
+    MLIRLLVMDialect
+    MLIRLLVMToLLVMIRTranslation
+    MLIRNVGPUDialect
+    MLIRNVVMDialect
+    MLIRNVVMToLLVMIRTranslation
+    MLIRPass
+    MLIRSupport
+    MLIRTargetLLVMIRExport
+    MLIRTransformDialect
+    iree::base::internal::flatcc::building
+    iree::compiler::Codegen
+    iree::compiler::Codegen::Dialect::Codegen::IR::IREECodegenDialect
+    iree::compiler::Codegen::LLVMGPU
+    iree::compiler::Codegen::Utils
+    iree::compiler::Dialect::HAL::Target
+    iree::compiler::Dialect::HAL::Utils::LLVMLinkerUtils
+    iree::compiler::PluginAPI
+    iree::compiler::Utils
+    iree::schemas::sim_executable_def_c_fbs
+  PUBLIC
+)

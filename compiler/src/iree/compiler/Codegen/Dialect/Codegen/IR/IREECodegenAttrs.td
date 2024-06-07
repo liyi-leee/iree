@@ -76,6 +76,9 @@ def Linalg_TransformDialectCodegen
 def Custom
     : I32EnumAttrCase<"Custom", 1001>;
 
+def LLVMGPU_Vectorize4Sim
+    : I32EnumAttrCase<"LLVMGPUVectorize4Sim", 1002>;
+
 def None : I32EnumAttrCase<"None", 0xffff>;
 
 // EnumAttrCase for all known lowerings for ops within dispatch region
@@ -108,6 +111,8 @@ def DispatchLoweringPassPipelineEnum : I32EnumAttr<
 
     // For out of tree pass-pipelines
     Custom,
+
+    LLVMGPU_Vectorize4Sim,
 
     // None to specify no in-built pipelines to use.
     None

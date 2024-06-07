@@ -94,3 +94,9 @@ artifacts/
 # Side effects of local patching/merging
 *.orig
 *.rej
+
+.ccache/
+build_tools/
+iree-build/
+lab/
+lab_*/

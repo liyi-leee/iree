@@ -1055,7 +1055,15 @@ static LogicalResult setRootDefaultConfig(IREE::GPU::TargetAttr target,
                    [](AffineMap m) { return !m.isProjectedPermutation(); })) {
     vectorSize = 1;
   } else {
-    passPipeline = CodeGenPipeline::LLVMGPUVectorize;
+    // llvm::outs() << "\n\n\n" << __func__ << "\n";
+    // target.printStripped(llvm::outs());
+    // llvm::outs() << "\n\n\n";
+    // llvm::outs() << target.getArch();
+    if (target.getArch() == "sim_00"){
+      passPipeline = CodeGenPipeline::LLVMGPUVectorize4Sim;
+    }else{
+      passPipeline = CodeGenPipeline::LLVMGPUVectorize;
+    }
   }
 
   int64_t id = 0;
